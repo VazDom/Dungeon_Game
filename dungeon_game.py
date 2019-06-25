@@ -1,3 +1,4 @@
+import os
 import random
 
 # draw map
@@ -17,35 +18,50 @@ CELLS= [(0,0),(1,0),(2,0),(3,0),(4,0),
 		(0,3),(1,3),(2,3),(3,3),(4,3),
 		(0,4),(1,4),(2,4),(3,4),(4,4)]
 
+def clear_screen():
+	os.system('cls' if os.name == 'nt' else 'clear')
 
 def get_locations():
-	monster = None
-	door = None
-	player = None
-	return monster, door, player
+	# Returns a list of tuples
+	return random.sample(CELLS, 3) 
 
 
 def move_player(player, move):
-	# if move == LEFT x - 1
-	# if move == RIGHT x + 1
-	# if move == UP y - 1
-	# if move == DOWN y + 1
-	return player
+	x,y = player
+	if move == "LEFT":
+		x -= 1
+	if move == "RIGHT":
+		x += 1
+	if move == "UP":
+		y -= 1
+	if move == "DOWN":
+		y += 1
+	return x, y
 
 
-def get_moves():
+def get_moves(player):
 	moves = ["LEFT", "RIGHT", "UP", "DOWN"]
-	# if player's y == 0 they cant move up
-	# if player's y == 4 they cant move down
-	# if player's x == 0 they cant move left
-	# if player's x == 4 they cant move right
+	# Unpacking player tuple into x and y coordinates
+	x,y = player
+	if x == 0:
+		moves.remove("LEFT")
+	if x == 4:
+		moves.remove("RIGHT")
+	if y == 0:
+		moves.remove("UP")
+	if y == 4:
+		moves.remove("DOWN")
 	return moves
 
+# Unpacking move list
+monster, door, player = get_locations()
 
 while True:
+	valid_moves = get_moves(player)
+	clear_screen()
 	print("Wellcome to the dungeon")
-	print("you are currently in room {}")  #fill with player position
-	print("you can move {}") #fill with available moves
+	print("you are currently in room {}".format(player))
+	print("you can move {}".format(", ".join(valid_moves))) 
 	print("Enter QUIT to quit")
 
 	move = input("> ")
@@ -53,9 +69,14 @@ while True:
 
 	if move == "QUIT":
 		break
+	if move in valid_moves:
+		player = move_player(player, move)
+	else:
+		print("\n ** Walls are hard dont run into them ** \n")
+		continue
 
-# good move? Change player position
-# Bad move? Don't change anything
+
+
 # On the door? They win
 # On the monster? they lose
 # Otherwise loop back around
