@@ -53,30 +53,38 @@ def get_moves(player):
 		moves.remove("DOWN")
 	return moves
 
-# Unpacking move list
-monster, door, player = get_locations()
 
-while True:
-	valid_moves = get_moves(player)
-	clear_screen()
-	print("Wellcome to the dungeon")
-	print("you are currently in room {}".format(player))
-	print("you can move {}".format(", ".join(valid_moves))) 
-	print("Enter QUIT to quit")
-
-	move = input("> ")
-	move = move.upper()
-
-	if move == "QUIT":
-		break
-	if move in valid_moves:
-		player = move_player(player, move)
-	else:
-		print("\n ** Walls are hard dont run into them ** \n")
-		continue
+def draw_map(player):
 
 
 
-# On the door? They win
-# On the monster? they lose
-# Otherwise loop back around
+def game_loop():
+	# Unpacking CELLS list
+	monster, door, player = get_locations()
+
+	while True:
+		draw_map(player)
+		valid_moves = get_moves(player)
+
+		print("you are currently in room {}".format(player))
+		print("you can move {}".format(", ".join(valid_moves))) 
+		print("Enter QUIT to quit")
+
+		move = input("> ")
+		move = move.upper()
+
+		if move == "QUIT":
+			break
+		if move in valid_moves:
+			player = move_player(player, move)
+		else:
+			input("\n ** Walls are hard dont run into them ** \n")
+		clear_screen()
+
+
+
+clear_screen()
+print("Wellcome to the dungeon")
+print("Press return to start")
+clear_screen()
+game_loop()
