@@ -1,16 +1,6 @@
 import os
 import random
 
-# draw map
-# pic random location for player
-# pic random location for exit door
-# pic random location for the monster
-# draw player in the map
-# take input for movement
-# move player, unless invalid move (past edges of grid)
-# check for win/loss
-# clear screen and redraw grid
-
 
 CELLS= [(0,0),(1,0),(2,0),(3,0),(4,0),
 		(0,1),(1,1),(2,1),(3,1),(4,1),
@@ -55,14 +45,35 @@ def get_moves(player):
 
 
 def draw_map(player):
+	print(" _"*5)
+	title = "|{}"
+
+	for cell in CELLS:
+		x,y = cell
+		if x < 4:
+			line_end = ""
+			if cell == player:
+				output = title.format("X")
+			else:
+				output = title.format("_")
+		else:
+			line_end = "\n"
+			if cell == player:
+				output = title.format("X|")
+			else:
+				output = title.format("_|")
+		print(output, end = line_end)
+
 
 
 
 def game_loop():
 	# Unpacking CELLS list
 	monster, door, player = get_locations()
+	playing = True
 
-	while True:
+	while playing:
+		clear_screen()
 		draw_map(player)
 		valid_moves = get_moves(player)
 
@@ -74,17 +85,27 @@ def game_loop():
 		move = move.upper()
 
 		if move == "QUIT":
+			print("\n ** See you next time! **\n")
 			break
 		if move in valid_moves:
 			player = move_player(player, move)
+			if player == monster:
+				print("\n ** OH NO! the monster got you**\n")
+				playing = False
+			if player == door:
+				print("\n You escaped! CONGRATS \n")
+				playing = False
 		else:
 			input("\n ** Walls are hard dont run into them ** \n")
-		clear_screen()
+	else:
+		if input("Pay again? [y/n]".lower()) != "n":
+			game_loop()
+		
 
 
 
 clear_screen()
 print("Wellcome to the dungeon")
-print("Press return to start")
+input("Press return to start")
 clear_screen()
 game_loop()
